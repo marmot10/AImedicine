@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录页面</title>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-family: sans-serif;
+            height: 100vh;
+            background: url('../img/8E4ACF30F83153AE872D2CF9AE45597B.jpg') no-repeat;
+            /* background: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #5a6ac6); */
+            background-size: 100% 100%;
+            min-width: 1000px;
+            backdrop-filter: blur(1px);
+            position: relative;
+            color: #0d5663;
+        }
+
+        /* .content {
+			width: 700px;
+			height: 900px;
+			overflow: hidden;
+		} */
+
+        .box {
+            /* font-family: serif, sans-serif; */
+            /* animation: animated-border 1.5s infinite; */
+            width: 400px;
+            height: 450px;
+            padding: 50px;
+            background-color: rgba(71, 146, 203);
+            box-sizing: border-box;
+            box-shadow: 0px 15px 25px rgba(216, 213, 213, 0.5);
+            /* backdrop-filter: blur(50px); */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 40px;
+            transform: translate(-50%, -50%);
+        }
+
+
+
+        .box h2 {
+            font-family: serif, sans-serif;
+            margin: 0 0 30px;
+            padding: 0;
+            font-size: 28px;
+            text-align: center;
+            color: rgb(8, 11, 11);
+        }
+
+        .box .inputbox {
+            position: relative;
+        }
+
+        .box .inputbox input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            border: none;
+            border-bottom: 1px solid #fff;
+            outline: none;
+            background: transparent;
+        }
+
+        .box .inputbox label {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 10px 0;
+            font-size: 16px;
+            pointer-events: none;
+            transition: .5s;
+        }
+
+        .box .inputbox input:focus~label,
+        .box .inputbox input:valid~label {
+            top: -18px;
+            left: 0;
+            /* color: #3491bb; */
+            font-size: 14px;
+        }
+
+        .box button {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: #03a9f4;
+            padding: 15px 20px;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-left: 10px;
+        }
+
+        @keyframes animated-border {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>基于多模态大模型的运动障碍智能康复系统</h2>
+        <!-- <h2>Login</h2> -->
+        <form>
+            <div class="inputbox">
+                <input type="text" name="" required="" id="username">
+                <label>Username</label>
+            </div>
+            <div class="inputbox">
+                <input type="password" name=" " required="" id="password">
+                <label>Password</label>
+            </div>
+            <button id="btn">
+                登录
+            </button>
+            <button id="btn1">
+                注册
+            </button>
+
+        </form>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<script>
+    const username = document.getElementById('username')
+    const password = document.getElementById('password')
+    const btn = document.getElementById('btn')
+    const btn1 = document.getElementById('btn1')
+    btn.onclick = (event) => {
+        event.preventDefault();
+        // console.log(username.value, password.value)
+        if (username.value == 'admin' && password.value == 'admin') {
+            window.location.replace('../01_admin/index.html')
+        } else {
+            axios.get(`http://api.godreams.cn/loginNow?username=${username.value}&password=${password.value}`)
+                .then((data) => {
+                    const state = data.data.data
+                    console.log(state)
+                    if (state == 1) {
+                        window.location.replace('../02_public/index.html')
+                    } else {
+                        alert('不好意思，用户名/密码错误，请重新尝试')
+                    }
+                })
+                .catch(err => {
+                    if (username.value != '' && password.value != '')
+                        window.location.replace('../02_public/index.html')
+                })
+        }
+
+    }
+    btn1.onclick = (event) => {
+        event.preventDefault()
+        window.location.href = './register.html'
+    }
+</script>
+
+</html>

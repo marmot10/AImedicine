@@ -1,0 +1,146 @@
+.sidebar ul .do_show {
+  width: 100%;
+  display: none;
+}
+.sidebar ul .do_show li {
+  width: 100%;
+  color: #00a7ff;
+  cursor: pointer;
+  box-shadow: none !important;
+  background-color: white;
+}
+.sidebar ul .do_show li a:hover {
+  box-shadow: none !important;
+  background-color: white;
+}
+#doOut {
+  cursor: pointer;
+  color: #00a7ff;
+  padding-left: 20%;
+}
+.talk .box {
+  width: 85%;
+  margin: 0 auto;
+  height: 80vh;
+  background-color: #ffffff;
+  position: relative;
+  text-align: center;
+  padding-top: 5px;
+}
+.talk .box img {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  cursor: pointer;
+}
+.talk .box .content {
+  width: 100%;
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+}
+.talk .box .content img {
+  height: 40px;
+  width: 40px;
+  z-index: 99;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.talk .box .content .text {
+  height: 50px;
+  width: 100%;
+  padding-left: 60px;
+  position: absolute;
+  border-radius: 10px;
+  border: 1px solid black;
+  left: 0;
+  font-size: 20px;
+}
+.talk .box .content .text:focus {
+  border: 1px solid black !important;
+}
+.talk .box .content #button {
+  position: absolute;
+  right: 10px;
+  width: 50px;
+  height: 30px;
+  bottom: -40px;
+  border: none;
+  color: aliceblue;
+  border-radius: 5px;
+  background-color: #487ee3;
+}
+.talk .box ::-webkit-scrollbar {
+  width: 0px;
+}
+.talk .box .answer {
+  width: 100%;
+  max-height: 68vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  font-size: 18px;
+  margin: 0 auto;
+  margin-top: -3vh;
+  color: aliceblue;
+}
+.talk .box .answer #question {
+  width: 100%;
+  min-height: 10vh;
+  font-size: 18px;
+  padding: 20px;
+}
+.talk .box .answer #question h4 {
+  color: aliceblue;
+}
+.talk .box .answer #question div {
+  float: right;
+  text-align: left;
+  padding: 10px;
+  position: relative;
+  background-color: #007BFF;
+  margin-top: 20px;
+}
+.talk .box .answer #question div::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border: 10px solid;
+  border-color: #007BFF transparent transparent transparent;
+}
+.talk .box .answer #idea {
+  width: 100%;
+  min-height: 10vh;
+  font-size: 18px;
+  padding: 20px;
+}
+.talk .box .answer #idea div {
+  float: left;
+  text-align: left;
+  padding: 10px;
+  position: relative;
+  background-color: #dddddd;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: black;
+}
+.talk .box .answer #idea div h4 {
+  color: black;
+  font-weight: 500;
+}
+.talk .box .answer #idea div::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border: 10px solid;
+  border-color: #dddddd transparent transparent transparent;
+}

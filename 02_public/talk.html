@@ -1,0 +1,229 @@
+<!-- 下肢康复评估系统前端代码 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>康复评估</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/datepicker3.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="./public.css">
+    <!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><span>下肢康复</span>评估系统</a>
+                <ul class="user-menu">
+                    <li class="dropdown pull-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="person"><span
+                                class="glyphicon glyphicon-user"></span> &nbsp; 用户 <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> 用户信息</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-cog"></span> 设置</a></li>
+                            <li id="log-out"><a href="#"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+        <form role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search">
+            </div>
+        </form>
+        <ul class="nav menu">
+            <li><a href="index.html"><span class="glyphicon glyphicon-dashboard"></span>康复情况</a></li>
+            <li><a href="index copy.html"><span class="glyphicon glyphicon-th"></span> 三维展示</a></li>
+            <li><a href="charts.html"><span class="glyphicon glyphicon-stats"></span> 历史数据</a></li>
+            <li class="active"><a href="talk.html"><span class="glyphicon glyphicon-search"></span> 智能问答</a></li>
+            <li id="doOut"><span class="glyphicon glyphicon-th-list"></span>其他操作</li>
+            <ul id="doShow" class="do_show">
+                <li><a href="./dataUpload/dataUpload.html"><span class="glyphicon glyphicon-pencil"></span>智能诊断</a></li>
+                <!--<li>-->
+                <!--    <span class="glyphicon glyphicon-zoom-in"></span>智能诊断-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--    <span class="glyphicon glyphicon-hand-right"></span>相似病例-->
+                <!--</li>-->
+            </ul>
+
+
+            <li role="presentation" class="divider"></li>
+            <!-- <li><a href="login.html"><span class="glyphicon glyphicon-user"></span>登录</a></li> -->
+        </ul>
+    </div><!--/.sidebar-->
+
+    <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main talk">
+        <div class="box">
+            <img src="../img/talk.png" alt="" id="clearData">
+            <h3>详情诊断
+            </h3>
+            <hr>
+            <div class="answer" id="answer">
+
+            </div>
+            <div class="content">
+                <img src="../img/OIP-C.jpg" alt="">
+                <input placeholder="请输入你的问题" type="text" class="text" id="text">
+                <input type="button" name="" id="button" value="提交">
+            </div>
+
+
+        </div>
+    </div><!--/.col-->
+
+    <div class="col-md-4">
+
+
+
+    </div>
+
+    </div><!--/.col-->
+    </div><!--/.row-->
+    </div> <!--/.main-->
+
+    <script src="../js/jquery-1.11.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/chart.min.js"></script>
+    <script src="../js/chart-data2.js"></script>
+    <script src="../js/easypiechart.js"></script>
+    <script src="../js/easypiechart-data.js"></script>
+    <script src="../js/bootstrap-datepicker.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/jquery/2.0.1/jquery.js"></script> -->
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        // 对话框
+        const text = document.getElementById('text')
+        const button = document.getElementById('button')
+        const answer = document.getElementById('answer')
+        const clearData = document.getElementById('clearData')
+
+        // 清空数据
+        clearData.onclick = () => {
+            axios.get('http://43.131.232.77:5000/ret').then(res => {
+                answer.innerHTML = ''
+            }).catch(error => {
+                console.log(error)
+            })
+        }
+        // 对话参数
+        button.onclick = () => {
+            const value = text.value
+
+            if (value.trim() === '') {
+                alert('输入不可以为空哦!')
+            } else {
+                const div1 = document.createElement('div')
+                div1.setAttribute('id', 'question')
+                div1.innerHTML = `<div>
+                                        <h4>You:</h4>
+                                        ${value}
+                                    </div>`
+                answer.appendChild(div1)
+                axios.get(`http://43.131.232.77:5000/ask?que=${value}`).then(res => {
+
+                    const div2 = document.createElement('div')
+                    div2.setAttribute('id', 'idea')
+                    div2.innerHTML = ` 
+                                        <div>
+                                            <h4>小量:</h4>
+                                            ${res.data.data}
+                                        </div>`
+                    answer.appendChild(div2)
+                    answer.scrollTop = answer.scrollHeight;
+                    // console.log(res.data)
+                    text.value = ''
+                }).catch(error => {
+                    const div2 = document.createElement('div')
+                    div2.setAttribute('id', 'idea')
+                    div2.innerHTML = `<div><h4>
+                                            小量:</h4>
+                                            <p>网络问题，请点击右上角重置！</p>
+                                        </div>`
+                    answer.appendChild(div2)
+                    answer.scrollTop = answer.scrollHeight;
+                })
+            }
+        }
+        const log_out = document.getElementById('log-out')
+        const doOut = document.getElementById('doOut')
+        const doShow = document.getElementById('doShow')
+        doOut.onclick = () => {
+            let display = doShow.style.display
+            if (display == '' || display == 'none') {
+                doShow.style.display = 'block'
+            } else {
+                doShow.style.display = 'none'
+            }
+        }
+
+        $('#calendar').datepicker({
+        });
+
+        !function ($) {
+            $(document).on("click", "ul.nav li.parent > a > span.icon", function () {
+                $(this).find('em:first').toggleClass("glyphicon-minus");
+            });
+            $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+        }(window.jQuery);
+
+        $(window).on('resize', function () {
+            if ($(window).width() > 765) $('#sidebar-collapse').collapse('show')
+
+        })
+        $(window).on('resize', function () {
+            if ($(window).width() <= 766) $('#sidebar-collapse').collapse('hide')
+        })
+        log_out.onclick = () => {
+            window.location.replace('../03_login/login.html')
+        }
+
+        function getQueryParams() {
+            var search = window.location.search;
+            var queryParams = {};
+            if (search) {
+                // 去掉开头的问号
+                search = search.substr(1);
+                var pairs = search.split("&");
+                pairs.forEach(function (pair) {
+                    var segments = pair.split("=");
+                    var name = decodeURIComponent(segments[0]);
+                    var value = decodeURIComponent(segments[1]);
+                    queryParams[name] = value;
+                });
+            }
+            return queryParams;
+        }
+
+        // 调用这个函数，可以获取所有的查询参数
+        var params = getQueryParams();
+        if (params.username) {
+            const person = document.getElementById('person')
+            person.innerHTML = person.innerHTML.replace('用户', params.username)
+        }
+
+    </script>
+</body>
+
+</html>

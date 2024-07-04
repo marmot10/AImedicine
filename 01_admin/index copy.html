@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>康复评估</title>
+
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/datepicker3.css" rel="stylesheet">
+	<link href="../css/styles.css" rel="stylesheet">
+
+	<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+					data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><span>下肢康复</span>评估系统</a>
+				<ul class="user-menu">
+					<li class="dropdown pull-right">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+								class="glyphicon glyphicon-user"></span>admin <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#"><span class="glyphicon glyphicon-user"></span> 用户信息</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-cog"></span> 设置</a></li>
+							<li id="log-out"><a href="#"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div><!-- /.container-fluid -->
+	</nav>
+
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+			<li><a href="index.html"><span class="glyphicon glyphicon-dashboard"></span>用户列表</a></li>
+			<li class="active"><a href="index copy.html"><span class="glyphicon glyphicon-th"></span> 三维展示</a></li>
+			<li><a href="charts.html"><span class="glyphicon glyphicon-stats"></span> 历史数据</a></li>
+
+			<li role="presentation" class="divider"></li>
+			<!-- <li><a href="login.html"><span class="glyphicon glyphicon-user"></span>登录</a></li> -->
+		</ul>
+	</div><!--/.sidebar-->
+
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+
+
+			</ol>
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">三维人体展示</h1>
+			</div>
+		</div><!--/.row-->
+
+
+
+
+
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+		<div class="row">
+			<div class="col-xs-6 col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-body easypiechart-panel">
+						<h4>大腿x活动度</h4>
+						<div class="easypiechart" id="easypiechart-blue" data-percent="23"><span class="percent" id="a" >23</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6 col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-body easypiechart-panel">
+						<h4>大腿y活动度</h4>
+						<div class="easypiechart" id="easypiechart-orange" data-percent="38"><span class="percent" id="b">38</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6 col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-body easypiechart-panel">
+						<h4>小腿x活动度</h4>
+						<div class="easypiechart" id="easypiechart-teal" data-percent="77"><span class="percent" id="e" >77</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6 col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-body easypiechart-panel">
+						<h4>小腿y活动度</h4>
+						<div class="easypiechart" id="easypiechart-red" data-percent="44"><span class="percent" id="f">44</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/.row-->
+
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-lg-12">
+
+
+				<div class="panel-body">
+
+					<canvas id="person" height="300" width="600" margin-left="800"></canvas>
+
+				</div>
+
+
+			</div>
+		</div>
+	</div><!--/.row-->
+
+
+	<div class="col-md-4">
+
+
+
+	</div>
+
+	</div><!--/.col-->
+	</div><!--/.row-->
+	</div> <!--/.main-->
+
+	<script src="../js/jquery-1.11.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/chart.min.js"></script>
+	<script src="../js/chart-data2.js"></script>
+	<script src="../js/easypiechart.js"></script>
+	<script src="../js/easypiechart-data.js"></script>
+	<script src="../js/bootstrap-datepicker.js"></script>
+	<script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/mqtt/4.2.6/mqtt.js"></script>
+	<!-- 引入threejs扩展控件OrbitControls.js -->
+	<script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
+	<script>
+		const log_out = document.getElementById('log-out')
+		log_out.onclick = () => {
+			window.location.replace('../03_login/login.html')
+		}
+		// $('#calendar').datepicker({
+		// });
+
+		// !function ($) {
+		//     $(document).on("click","ul.nav li.parent > a > span.icon", function(){          
+		//         $(this).find('em:first').toggleClass("glyphicon-minus");      
+		//     }); 
+		//     $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+		// }(window.jQuery);
+
+		// $(window).on('resize', function () {
+		//   if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		// })
+		// $(window).on('resize', function () {
+		//   if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		// })
+
+		var scene = new THREE.Scene();
+		/**
+		 * 加载解析骨骼模型动画
+		 */
+
+		// 连接选项
+		const options = {
+			clean: true, // true: 清除会话, false: 保留会话
+			connectTimeout: 4000, // 超时时间
+			// 认证信息
+			clientId: 'emqx_test',
+			username: 'emqx_test',
+			password: 'emqx_test',
+		}
+		// alis 支付宝小程序连接
+		const connectUrl = 'ws://218.28.238.170:8083/mqtt'
+		const client = mqtt.connect(connectUrl, options)
+
+		client.on('connect', function () {
+			client.subscribe('app/push/108/+', function (err) {
+				if (!err) {
+					// 订阅成s功
+					// console.log("订阅成功");
+				}
+			})
+			client.subscribe('app/push/106/+', function (err) {
+				if (!err) {
+					// 订阅成功
+					// console.log("订阅成功");
+				}
+			})
+			client.subscribe('app/push/107/+', function (err) {
+				if (!err) {
+					// 订阅成功
+					// console.log("订阅成功");
+				}
+			})
+		})
+		client.on('reconnect', (error) => {
+			// console.log('正在重连:', error)
+		})
+
+		client.on('error', (error) => {
+			// console.log('连接失败:', error)
+		})
+
+		var loader = new THREE.ObjectLoader(); //创建一个加载器
+
+
+		loader.load("../marine_anims_core.json", function (obj) {
+
+			scene.add(obj); //添加到场景中
+			obj.position.set(100, -50, -50);
+			//obj.rotateY(Math.PI/4);
+			// console.log('test', obj);
+			//从返回对象获得骨骼网格模型
+			SkinnedMesh = obj.children[0];
+			Mesh = obj.children[0];
+
+			//Mesh.skeleton.bones[4].rotation.set(0,-0.38,0);
+			// Mesh.skeleton.bones[4].rotation.set(0.08,-1.5,-3.03);
+			// console.log('test777', Mesh.skeleton.bones[7].rotation);
+			// console.log('test888',Mesh.skeleton.bones[4].rotation);
+			// console.log('TEST32', SkinnedMesh.skeleton.bones);
+			var bone0 = SkinnedMesh.skeleton.bones[0];
+			//bone0.rotateY(0);	 
+			//SkinnedMesh.skeleton.bones[3].rotateY(1)
+			//SkinnedMesh.skeleton.bones[4].rotateY(-0.2)
+			//mesh.skeleton.bones[5].rotation.set(0, 0, pos);
+
+
+
+			//查看骨骼网格模型的帧动画数据
+			// console.log(SkinnedMesh.geometry.animations)
+			// 骨骼辅助显示
+			var skeletonHelper = new THREE.SkeletonHelper(SkinnedMesh);
+			scene.add(skeletonHelper);
+		});
+
+
+
+
+
+
+
+
+
+		const geometry = new THREE.PlaneGeometry(5, 20, 32);
+		const material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+		const plane = new THREE.Mesh(geometry, material);
+		scene.add(plane);
+
+		//三维坐标系辅助显示
+		var AxesHelper = new THREE.AxesHelper(600);
+		scene.add(AxesHelper);
+		/**
+		 * 光源设置
+		 */
+		//点光源
+		var point = new THREE.PointLight(0xffffff);
+		point.position.set(400, 200, 300); //点光源位置
+		var point2 = new THREE.PointLight(0xffffff);
+		point.position.set(400, 300, 300); //点光源位置
+		scene.add(point); //点光源添加到场景中
+		scene.add(point2); //点光源添加到场景中
+		//环境光
+		var ambient = new THREE.AmbientLight(0x444444);
+		scene.add(ambient);
+		/**
+		 * 相机设置
+		 */
+		//var width = 1500
+		var width = window.innerWidth //窗口宽度
+		//var width = 1400
+		// console.log(width)
+		//var height = 700
+		var height = 600; //窗口高度
+		//var height = 800; //窗口高度
+		// console.log(height)
+		var k = width / height; //窗口宽高比
+		var s = 120; //三维场景显示范围控制系数，系数越大，显示的范围越大
+		//创建相机对象
+		var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+		camera.position.set(200, 50, 0); //设置相机位置
+		camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+		/**
+		 * 创建渲染器对象
+		 */
+		var webglCanvas = document.getElementById("person");
+		var renderer = new THREE.WebGLRenderer({ canvas: webglCanvas, antialias: true });
+		renderer.setSize(width, height); //设置渲染区域尺寸
+		renderer.setClearColor(0xffffff, 1.0); //设置背景颜色	//renderer.setClearAlpha();
+
+		document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+		var times = 0;
+		var pre1;
+		var pre2;
+		var pre3;
+		var tmp1;
+		var tmp2;
+		var tmp3;
+		var c = document.getElementById('a');
+		var d = document.getElementById('b');
+		var e = document.getElementById('e');
+		var f = document.getElementById('f');
+		client.on('message', (topic, message) => {
+			if (times % 3 == 0) {
+				// 		//console.log(topic);
+				//  if(topic == 'app/push/108/54' ){
+				// 	console.log(topic);
+				// 	result = JSON.parse(message.toString())
+				// //console.log("test999",pre_pos.x);
+				// //console.log('test5',pre_pos);
+
+				// 	result2 = {
+				//             "x":-(result.EULER_X+105),
+				//             "y":-(result.EULER_Y-10),
+				//             "z":result.EULER_Z,
+				// 			}; 
+				// 	console.log('test888888888',result2);
+				// 	Mesh.skeleton.bones[7].rotation.set(result2.y/180*Math.PI,-result2.x/180*Math.PI,-3.03);
+
+				// 		}
+
+
+				if (topic == 'app/push/106/54') {
+					// console.log(topic);
+					result = JSON.parse(message.toString())
+					//console.log("test999",pre_pos.x);
+					//console.log('test5',pre_pos);
+					pre1 = tmp1;
+					// console.log('test1', pre1);
+
+					result3 = {
+						"x": result.EULER_X + 80,
+						"y": result.EULER_Y + 90,
+						"z": -result.EULER_Z + 150,
+					};
+					tmp1 = result3.x
+					a.innerHTML = result3.x.toFixed(2);
+					b.innerHTML = result3.y.toFixed(2);
+					// console.log('test2', tmp1);
+					// console.log(result3);
+
+					if (Math.abs(result3.x - pre1) > 1.0) {
+						//0
+						Mesh.skeleton.bones[4].rotation.set(0, result3.x / 180 * Math.PI, 0);
+					}
+
+				}
+				if (topic == 'app/push/107/54') {
+					//console.log(topic);
+					result = JSON.parse(message.toString())
+					pre2 = tmp2;
+					pre3 = tmp3;
+					result4 = {
+						//90
+						"x": result.EULER_X + 105,
+						"y": -(result.EULER_Y - 10),
+						"z": result.EULER_Z,
+					};
+					tmp2 = result4.x;
+					tmp3 = result4.y;
+					// console.log(result4.y);
+					//console.log('test666',Mesh.skeleton.bones[3].rotation);
+					//0.08
+					e.innerHTML = result4.x.toFixed(2);
+					f.innerHTML = result4.y.toFixed(2);
+					if (Math.abs(result4.x - pre2) > 1.0) {
+						Mesh.skeleton.bones[3].rotation.set(0.08, -result4.x / 180 * Math.PI, -3.03);
+					}
+
+				}
+				renderer.render(scene, camera);
+			}
+			times++;
+
+		})
+		function render() {
+
+			renderer.render(scene, camera); //执行渲染操作
+
+			requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
+		}
+		//  function animate(time) {
+		// 	requestAnimationFrame(animate);
+		// 	TWEEN.update(1000);
+		// 	renderer.render(scene, camera); //执行渲染操作
+		//     requestAnimationFrame(animate);//请求再次执行渲染函数render，渲染下一帧
+		// }
+		// requestAnimationFrame(animate);
+		render();
+		//创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
+		var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+	</script>
+</body>
+
+</html>
