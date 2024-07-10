@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>康复评估</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/Tween.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script> -->
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/tween.js/18.6.4/tween.amd.js"></script> -->
+<script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mqtt/4.2.6/mqtt.js"></script>
+<!-- 引入threejs扩展控件OrbitControls.js -->
+<script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
+<script src="utils.js"></script>
+<style>
+</style>
+</head>
+<body>
+	
+								
+		<div class="row">
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-blue panel-widget ">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+						   <p style=" text-align:center;font-size:25px;"><b>步行速度</b></p>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large" id="a">6.325</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-orange panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<p style=" text-align:center;font-size:25px;"><b>左右脚平均步长</b></p>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large" id="b">3.325</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-teal panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+						
+							<p style=" text-align:center;font-size:23px;"><b>髋关节屈曲活动度</b></p>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large" id="c">13.654</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-red panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+						
+							<p style=" text-align:center;font-size:23px;"><b>髋关节伸展活动度</b></p>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large" id="d">19.654</div>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+		<canvas id="webglCanvas"></canvas>
+	<script>
+	var Mesh;
+	var tween;
+    var scene = new THREE.Scene();
+    /**
+     * 加载解析骨骼模型动画
+     */
+    var loader = new THREE.ObjectLoader(); //创建一个加载器
+	var n=0;
+
+    loader.load("./marine_anims_core.json", function(obj) {
+      
+      scene.add(obj); //添加到场景中
+	  obj.position.set(40, -40, 25);
+	  //obj.rotateY(Math.PI/4);
+      console.log('test',obj);
+	  //从返回对象获得骨骼网格模型
+	  SkinnedMesh = obj.children[0];
+	  Mesh = obj.children[0];
+	  
+	  console.log(SkinnedMesh.skeleton.bones);	
+	  var bone0=SkinnedMesh.skeleton.bones[0];
+	  //bone0.rotateY(0);	 
+	  //SkinnedMesh.skeleton.bones[3].rotateY(1)
+	  //SkinnedMesh.skeleton.bones[4].rotateY(-0.2)
+	  //mesh.skeleton.bones[5].rotation.set(0, 0, pos);
+	  pos_init = SkinnedMesh.skeleton.bones[4].position.z;
+	  startAnimation();
+	  console.log(pos_init);
+      //查看骨骼网格模型的帧动画数据
+      console.log(SkinnedMesh.geometry.animations)
+      // 骨骼辅助显示
+      var skeletonHelper = new THREE.SkeletonHelper(SkinnedMesh);
+      scene.add(skeletonHelper);
+	});
+
+	var pos3={x:0};
+	function startAnimation(){
+		 // 连接选项
+		 const options = {
+                clean: true, // true: 清除会话, false: 保留会话
+                connectTimeout: 4000, // 超时时间
+                // 认证信息
+                clientId: 'emqx_test',
+                username: 'emqx_test',
+                password: 'emqx_test',
+				}       
+		 		// 连接字符串, 通过协议指定使用的连接方式
+        		// ws 未加密 WebSocket 连接
+                // wss 加密 WebSocket 连接
+                // mqtt 未加密 TCP 连接
+                // mqtts 加密 TCP 连接
+                // wxs 微信小程序连接
+                // alis 支付宝小程序连接
+                const connectUrl = 'ws://218.28.238.170:8083/mqtt'
+                const client = mqtt.connect(connectUrl, options)
+
+				client.on('connect', function () {
+                    client.subscribe('app/push/108/+', function (err) {
+                        if (!err) {
+                            // 订阅成功
+                            console.log("订阅成功");
+                    }
+                    })
+				})
+				client.on('reconnect', (error) => {
+                    console.log('正在重连:', error)
+                })
+
+                client.on('error', (error) => {
+                    console.log('连接失败:', error)
+				})
+				var pre_pos;
+                var pos;
+                var pretween;  
+                var toggle = 1;
+				var times = 0;
+				var date1 = new Date();
+				var start = date1.getSeconds();
+				var num = 0;
+                client.on('message', (topic, message) => {
+                    // if(times %2 ==0 ){
+					result = JSON.parse(message.toString())
+					var date = new Date();
+					var end = date.getSeconds();
+					num++;
+					console.log(end-start,num);
+					
+                    pre_pos = pos;
+                    //console.log("test999",pre_pos.x);
+                    //console.log('test5',pre_pos);
+                   console.log(result);
+                    result2 = {
+                                "x":result.EULER_X,
+                                "y":result.EULER_Y,
+                                "z":result.EULER_Z,
+								}; 
+					pos = result2;
+					console.log("test555",pos.x);
+					console.log("test555",pos.y);
+					console.log("test555",pos.z);
+				if(toggle == 1){
+                        var pos3={x:0,y: 0,z: 0}
+     					var tween = new TWEEN.Tween(pos3) // Create a new tween that modifies 'coords'.
+	            					.to(pos, 80) // Move to (300, 200) in 1 second.
+	            					.easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+	            					.onUpdate(() => {
+										Mesh.skeleton.bones[4].rotation.set(pos3.x/180*Math.PI, pos3.y/180*Math.PI, 0);
+									})
+									.start() 
+									toggle--;
+									pretween = tween;	
+				}
+				else{
+					// if(Math.abs(pre_pos.x-pos.x)>6)
+                    //     {
+					// 		 new_tween = create_tween(pre_pos,pos,100);
+					// 		 pretween.chain(new_tween);
+                    //          pretween = new_tween;
+                    //     }
+                    //     else if(Math.abs(pre_pos.x-pos.x)>3)
+                    //     {
+                    //         new_tween = create_tween(pre_pos,pos,100);
+					// 		 pretween.chain(new_tween);
+                    //          pretween = new_tween;
+                    //     }
+                    //     else	
+                    //     {
+							new_tween = create_tween(pre_pos,pos,80);
+							 pretween.chain(new_tween);
+                             pretween = new_tween;
+                            
+                        //}
+
+                        //console.log('test555',pretween);
+                        //console.log("test8",pos.x);
+                            //console.log("test777",pre_pos.x);
+                            //console.log('test666',pos.x);
+                           // new_tween = create_tween(pre_pos,pos);
+                           
+                        }
+				
+				// times++;
+			})
+		}
+
+		function create_tween(pre_pos,after_pos,time){
+        	var pos = pre_pos // Start at (0, 0)
+        	var tween = new TWEEN.Tween(pos) // Create a new tween that modifies 'coords'.
+	    				.to(after_pos,time) // Move to (300, 200) in 1 second.
+	    				.easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+	    				.onUpdate(() => {
+							Mesh.skeleton.bones[4].rotation.set(pos.x/180*Math.PI, pos.y/180*Math.PI, 0);
+        				})
+        	return tween;
+    	} 
+
+
+	
+
+    	//三维坐标系辅助显示
+    var AxesHelper = new THREE.AxesHelper(600);
+    scene.add(AxesHelper);
+    /**
+     * 光源设置
+     */
+    //点光源
+    var point = new THREE.PointLight(0xffffff);
+    point.position.set(400, 200, 300); //点光源位置
+    scene.add(point); //点光源添加到场景中
+    //环境光
+    var ambient = new THREE.AmbientLight(0x444444);
+    scene.add(ambient);
+    /**
+     * 相机设置
+     */
+    var width = window.innerWidth //窗口宽度
+    console.log(width)
+
+    var height = window.innerHeight; //窗口高度
+    console.log(height)
+    var k = width / height; //窗口宽高比
+    var s = 150; //三维场景显示范围控制系数，系数越大，显示的范围越大
+    //创建相机对象
+    var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+    camera.position.set(200, 50, 0); //设置相机位置
+    camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+    /**
+     * 创建渲染器对象
+     */
+    var webglCanvas = document.getElementById("webglCanvas");
+    var renderer = new THREE.WebGLRenderer({canvas:webglCanvas,antialias:true});
+    renderer.setSize(width, height); //设置渲染区域尺寸
+    renderer.setClearColor(0xffffff, 1); //设置背景颜色
+	
+	//document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+
+	function render() {
+		TWEEN.update();
+	  	renderer.render(scene, camera); //执行渲染操作
+		
+	 	requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
+     }
+	//  function animate(time) {
+	// 	requestAnimationFrame(animate);
+	// 	TWEEN.update(1000);
+	// 	renderer.render(scene, camera); //执行渲染操作
+	//     requestAnimationFrame(animate);//请求再次执行渲染函数render，渲染下一帧
+	// }
+	// requestAnimationFrame(animate);
+	 render()
+    //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
+    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+
+	</script>	
+</body>
+
+</html>

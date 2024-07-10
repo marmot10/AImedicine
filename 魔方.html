@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>魔方</title>
+   
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/mqtt/4.2.6/mqtt.js"></script>
+    <style>
+        body {
+           
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="Stats-output">
+</div>
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+
+
+<script type="text/javascript">
+
+const options = {
+                clean: true, // true: 清除会话, false: 保留会话
+                connectTimeout: 4000, // 超时时间
+                // 认证信息
+                clientId: 'emqx_test',
+                username: 'emqx_test',
+                password: 'emqx_test',
+				}       
+                // alis 支付宝小程序连接
+                const connectUrl = 'ws://218.28.238.170:8083/mqtt'
+                const client = mqtt.connect(connectUrl, options)
+
+				client.on('connect', function () {
+               
+					client.subscribe('app/push/106/+', function (err) {
+                        if (!err) {
+                            // 订阅成功
+                            console.log("订阅成功");
+					}
+					})
+				
+				})
+				client.on('reconnect', (error) => {
+                    console.log('正在重连:', error)
+                })
+
+                client.on('error', (error) => {
+                    console.log('连接失败:', error)
+				})
+ 
+  
+        var scene = new THREE.Scene();
+
+      
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+      
+
+        var planeGeometry = new THREE.PlaneGeometry(60, 40, 1, 1);
+        var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+        var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.receiveShadow = true;
+
+        // rotate and position the plane
+        plane.rotation.x = -0.5 * Math.PI;
+        plane.position.x = 0;
+        plane.position.y = -10;
+        plane.position.z = 0;
+
+        // add the plane to the scene
+        scene.add(plane);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = -40;
+        camera.position.y = 40;
+        camera.position.z = 40;
+        camera.lookAt(scene.position);
+
+ 
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(-40, 60, -10);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        // add the output of the renderer to the html element
+        
+
+        var group = new THREE.Mesh();
+        // add all the rubik cube elements
+        var mats = [];
+        mats.push(new THREE.MeshBasicMaterial({color: 0x009e60}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0x009e60}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0x0051ba}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0x0051ba}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xffd500}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xffd500}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xff5800}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xff5800}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xC41E3A}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xC41E3A}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xffffff}));
+        mats.push(new THREE.MeshBasicMaterial({color: 0xffffff}));
+
+        var faceMaterial = new THREE.MeshFaceMaterial(mats);
+
+        for (var x = 0; x < 3; x++) {
+            for (var y = 0; y < 3; y++) {
+                for (var z = 0; z < 3; z++) {
+                    var cubeGeom = new THREE.BoxGeometry(2.9, 2.9, 2.9);
+                    var cube = new THREE.Mesh(cubeGeom, faceMaterial);
+                    cube.position.set(x * 3 - 3, y * 3, z * 3 - 3);
+
+                    group.add(cube);
+                }
+            }
+        }
+
+
+        // call the render function
+        scene.add(group);
+        var step = 0;
+
+     
+          var renderer = new THREE.WebGLRenderer();
+
+        //renderer.setClearColor(new THREE.Color(0x333, 1.0));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        //renderer.shadowMapEnabled = false;
+        document.getElementById("WebGL-output").appendChild(renderer.domElement);
+        var times = 0;
+        client.on('message', (topic, message) => {
+            if(times % 2 ==0){
+            console.log(topic);
+            
+            result = JSON.parse(message.toString())
+            console.log(result);
+            //stats.update();
+
+            result4 = {
+									//90
+                                	"x":result.EULER_X/180*Math.PI,
+                                	"y":result.EULER_Y/180*Math.PI ,
+                                	"z":result.EULER_Z/180*Math.PI,
+									}; 
+            group.rotation.set(result4.x,result4.y,result4.z);
+            // render using requestAnimationFrame
+            renderer.render(scene, camera);
+           
+            }
+            times++;
+        })
+        
+ 
+</script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>康复评估</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/styles.css" rel="stylesheet">
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+	<!-- 引入threejs扩展控件OrbitControls.js -->
+	<script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
+	<style>
+	</style>
+</head>
+
+<body>
+
+	<div class="row">
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<div class="panel panel-blue panel-widget ">
+				<div class="row no-padding">
+					<div class="col-sm-3 col-lg-5 widget-left">
+						<p style=" text-align:center;font-size:25px;"><b>步行速度</b></p>
+					</div>
+					<div class="col-sm-9 col-lg-7 widget-right">
+						<div class="large" id="a">6.325</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<div class="panel panel-orange panel-widget">
+				<div class="row no-padding">
+					<div class="col-sm-3 col-lg-5 widget-left">
+						<p style=" text-align:center;font-size:25px;"><b>左右脚平均步长</b></p>
+					</div>
+					<div class="col-sm-9 col-lg-7 widget-right">
+						<div class="large" id="b">3.325</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<div class="panel panel-teal panel-widget">
+				<div class="row no-padding">
+					<div class="col-sm-3 col-lg-5 widget-left">
+
+						<p style=" text-align:center;font-size:23px;"><b>髋关节屈曲活动度</b></p>
+					</div>
+					<div class="col-sm-9 col-lg-7 widget-right">
+						<div class="large" id="c">13.654</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<div class="panel panel-red panel-widget">
+				<div class="row no-padding">
+					<div class="col-sm-3 col-lg-5 widget-left">
+
+						<p style=" text-align:center;font-size:23px;"><b>髋关节伸展活动度</b></p>
+					</div>
+					<div class="col-sm-9 col-lg-7 widget-right">
+						<div class="large" id="d">19.654</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!--/.row-->
+	<canvas id="webglCanvas"></canvas>
+
+
+
+	<script>
+
+		var scene = new THREE.Scene();
+		/**
+		 * 加载解析骨骼模型动画
+		 */
+		var loader = new THREE.ObjectLoader(); //创建一个加载器
+		var mixer = null; //声明一个混合器变量
+		var n = 0;
+		var sleep = function (time) {
+			var startTime = new Date().getTime() + parseInt(time, 10);
+			while (new Date().getTime() < startTime) {
+				AnimationAction
+			}
+		};
+
+		loader.load("./marine_anims_core.json", function (obj) {
+
+			scene.add(obj); //添加到场景中
+			obj.position.set(40, -40, 25);
+			obj.rotateY(Math.PI);
+			console.log('test', obj);
+			//从返回对象获得骨骼网格模型
+			var SkinnedMesh = obj.children[0];
+			//骨骼网格模型作为参数创建一个混合器
+			console.log('test2', SkinnedMesh);
+			//mixer = new THREE.AnimationMixer(SkinnedMesh);
+			// 查看骨骼网格模型的帧动画数据
+			// console.log(SkinnedMesh.geometry.animations)
+			// 解析跑步状态对应剪辑对象clip中的关键帧数据
+			//var AnimationAction = mixer.clipAction(SkinnedMesh.geometry.animations[3]);
+			//AnimationAction.clampWhenFinished=true;
+			// 解析步行状态对应剪辑对象clip中的关键帧数据
+			// var AnimationAction = mixer.clipAction(SkinnedMesh.geometry.animations[3]);
+			//AnimationAction.timeScale = 1
+			AnimationAction.play();
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 1000);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 1150);
+
+
+
+			setTimeout(function () {
+				AnimationAction.timeScale = 0.5
+			}, 2000);
+
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 2150);
+
+
+
+			setTimeout(function () {
+				AnimationAction.timeScale = 0.2
+			}, 3200);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 3350);
+
+
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 4600);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 4750);
+
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 5800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 5950);
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 6800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 6950);
+
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 7800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 7950);
+
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 8800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 8950);
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 9800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 9950);
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 10800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 10915);
+
+			setTimeout(function () {
+				AnimationAction.paused = true;
+			}, 11800);
+			setTimeout(function () {
+				AnimationAction.paused = false;
+			}, 11915);
+
+
+
+
+
+
+
+			console.log(AnimationAction)
+
+
+
+
+			// 骨骼辅助显示
+			// var skeletonHelper = new THREE.SkeletonHelper(SkinnedMesh);
+			// scene.add(skeletonHelper);
+		})
+		function pause() {
+			// 如果是播放状态，设置为暂停状态
+			AnimationAction.paused = false;
+			sleep(10000)
+			// AnimationAction.paused = true;
+
+		};
+
+		//三维坐标系辅助显示
+		var AxesHelper = new THREE.AxesHelper(600);
+		scene.add(AxesHelper);
+		/**
+		 * 光源设置
+		 */
+		//点光源
+		var point = new THREE.PointLight(0xffffff);
+		point.position.set(400, 200, 300); //点光源位置
+		scene.add(point); //点光源添加到场景中
+		//环境光
+		var ambient = new THREE.AmbientLight(0x444444);
+		scene.add(ambient);
+		/**
+		 * 相机设置
+		 */
+		var width = window.innerWidth //窗口宽度
+		console.log(width)
+
+		var height = window.innerHeight; //窗口高度
+		console.log(height)
+		var k = width / height; //窗口宽高比
+		var s = 150; //三维场景显示范围控制系数，系数越大，显示的范围越大
+		//创建相机对象
+		var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+		camera.position.set(200, 50, 0); //设置相机位置
+		camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+		/**
+		 * 创建渲染器对象
+		 */
+		var webglCanvas = document.getElementById("webglCanvas");
+		var renderer = new THREE.WebGLRenderer({ canvas: webglCanvas, antialias: true });
+		renderer.setSize(width, height); //设置渲染区域尺寸
+		renderer.setClearColor(0xffffff, 1); //设置背景颜色
+		//document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+
+		var a = [6.535, 6.421, 6.454, 6.532, 6.41, 6.44, 6.535, 6.421, 6.454, 6.532, 6.41, 6.44]
+		var b = [3.254, 3.33, 3.23, 3.214, 3.23, 3.13, 3.33, 3.23, 3.214, 3.23, 3.13, 3.254]
+		var c = [13.654, 14.584, 14.954, 13.65, 14.84, 14.54, 13.654, 14.584, 14.954, 13.65, 14.84, 14.54]
+		var d = [19.654, 19.025, 19.256, 19.64, 19.025, 19.26, 19.654, 19.025, 19.256, 19.64, 19.025, 19.26]
+		var aa = document.getElementById("a");
+		var bb = document.getElementById("b");
+		var cc = document.getElementById("c");
+		var dd = document.getElementById("d");
+
+		// 创建一个时钟对象Clock
+		var clock = new THREE.Clock();
+		// 渲染函数
+		let t;
+		let T0 = new Date();//上次时间
+		let T1;
+		var i = 0
+		function render() {
+
+			T1 = new Date();//本次时间
+			t = T1 - T0;//时间差  
+
+			if (t < 4000) {
+				aa.innerHTML = a[i];
+				bb.innerHTML = b[i];
+				cc.innerHTML = c[i];
+				dd.innerHTML = d[i];
+
+			}
+			if (t > 4000 & t < 5000) {
+				aa.innerHTML = a[i + 1];
+				bb.innerHTML = b[i + 1];
+				cc.innerHTML = c[i + 1];
+				dd.innerHTML = d[i + 1];
+
+			}
+			if (t > 5000) {
+				aa.innerHTML = a[i + 2];
+				bb.innerHTML = b[i + 2];
+				cc.innerHTML = c[i + 2];
+				dd.innerHTML = d[i + 2];
+			}
+
+			if (t > 10000) {
+				aa.innerHTML = a[i + 3];
+				bb.innerHTML = b[i + 3];
+				cc.innerHTML = c[i + 3];
+				dd.innerHTML = d[i + 3];
+
+			}
+
+			if (t > 20000) {
+				aa.innerHTML = a[i + 4];
+				bb.innerHTML = b[i + 4];
+				cc.innerHTML = c[i + 4];
+				dd.innerHTML = d[i + 4];
+
+			}
+			if (t > 30000) {
+				aa.innerHTML = a[i + 5];
+				bb.innerHTML = b[i + 5];
+				cc.innerHTML = c[i + 5];
+				dd.innerHTML = d[i + 5];
+
+			}
+			if (t > 40000) {
+				aa.innerHTML = a[i + 6];
+				bb.innerHTML = b[i + 6];
+				cc.innerHTML = c[i + 6];
+				dd.innerHTML = d[i + 6];
+
+			}
+			if (t > 50000) {
+				aa.innerHTML = a[i + 7];
+				bb.innerHTML = b[i + 7];
+				cc.innerHTML = c[i + 7];
+				dd.innerHTML = d[i + 7];
+
+			}
+			if (t > 60000) {
+				aa.innerHTML = a[i + 8];
+				bb.innerHTML = b[i + 8];
+				cc.innerHTML = c[i + 8];
+				dd.innerHTML = d[i + 8];
+
+			}
+			if (t > 70000) {
+				aa.innerHTML = a[i + 9];
+				bb.innerHTML = b[i + 9];
+				cc.innerHTML = c[i + 9];
+				dd.innerHTML = d[i + 9];
+
+			}
+			if (t > 80000) {
+				aa.innerHTML = a[i + 10];
+				bb.innerHTML = b[i + 10];
+				cc.innerHTML = c[i + 10];
+				dd.innerHTML = d[i + 10];
+
+			}
+			if (t > 90000) {
+				aa.innerHTML = a[i + 11];
+				bb.innerHTML = b[i + 11];
+				cc.innerHTML = c[i + 11];
+				dd.innerHTML = d[i + 11];
+
+			}
+
+
+
+
+
+			//console.log(t)
+			//console.log(AnimationAction)
+			//sleep(10000)
+			renderer.render(scene, camera); //执行渲染操作
+			requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
+			if (mixer !== null) {
+				//clock.getDelta()方法获得两帧的时间间隔
+				// 更新混合器相关的时间
+				mixer.update(clock.getDelta());
+			}
+		}
+
+		render();
+		//创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
+		var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+	</script>
+</body>
+
+</html>
